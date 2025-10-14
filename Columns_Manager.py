@@ -2,6 +2,8 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 
+
+
 class ColumnsManager:
     def __init__(self):
         """Initialize the ExcelHeaderManager with a filename."""
@@ -9,7 +11,8 @@ class ColumnsManager:
     #    self.workbook = openpyxl.Workbook()
     #    self.sheet = self.workbook.active
     #    self.headers = []    
-        
+       
+    #Check!
 
     def set_headers(self, headers,  worksheet):
         """Set the headers for the first row of the Excel sheet."""
