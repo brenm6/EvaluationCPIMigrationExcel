@@ -1,0 +1,36 @@
+# Define the headers
+headers_newTemplate = [
+    "#",
+    "Scenario",
+    "Partner",
+    "Bezeichnung / Name CMDB",
+    "Message Throughput (30 Days)",
+    "Typ S",
+    "Modul",
+    "System",
+    "Sender Interface / Product CMDB",
+    "Typ R",
+    "Modul",
+    "System",
+    "Receiver Interface",
+    "AsynchronSynchron",
+    "ICO",
+    "Mapping",
+    "UDF",
+    "AnzahlEmpfänger",
+    "Quality of Service",
+    "Anzahl von Schnittstellen                      FTP",
+    "Anzahl von Schnittstellen                      SFTP",
+    "Anzahl von Schnittstellen                      FTPS",
+    "Anzahl von Schnittstellen                      UDF",
+    "Anzahl von Schnittstellen                      ABAP",
+    "MM",
+    "XSLT",
+    "Java",
+    "ABAP",
+    "UDF",
+    "Modules",
+    "EOIO"
+]
+
+
