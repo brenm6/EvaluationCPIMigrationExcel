@@ -19,7 +19,7 @@ class ColumnsManager:
 
         # headers_newTemplate
         fill = PatternFill(start_color="FFFF99", end_color="FFFF99", fill_type="solid")  # RGB: (255, 255, 153)  
-        header_font = Font(name="Arial", size=10, bold=True) 
+        header_font = Font(name="Arial Narrow", size=10, bold=True) 
    
         # Set the fill for the first cell in row 1 (A1)
         
@@ -35,7 +35,7 @@ class ColumnsManager:
         
     def first_line_bold(self, worksheet):
         """Make the first row bold."""
-        header_font_big = Font(name="Arial", size=18, bold=True) 
+        header_font_big = Font(name="Arial Narrow", size=18, bold=True) 
         for col in range(1, worksheet.max_column + 1):   
             cell = worksheet.cell(row=1, column=col + 1)  
             cell.font = Font(bold=True)
@@ -61,6 +61,10 @@ class ColumnsManager:
         for row in range(3, worksheet.max_row + 1):            
             cell = worksheet.cell(row=row, column=columnnumber)            
             cell.fill = colour       
+            
+    def set_column_width(self, worksheet, columnnumber, width):    
+        col_letter = get_column_letter(columnnumber)
+        worksheet.column_dimensions[col_letter].width = width   
                 
 # Example usage
 if __name__ == "__main__":

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bas="http://sap.com/xi/BASIS" xmlns:basg="http://sap.com/xi/BASIS/Global">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <bas:IntegratedConfigurationQueryRequest>
+      <!-- Filter by ID (sender/interface/namespace) -->
+      <!--
+      <bas:IntegratedConfigurationID>
+        <bas:SenderComponentID>YOUR_SENDER_COMPONENT</bas:SenderComponentID>
+        <bas:InterfaceName>YOUR_INTERFACE_NAME</bas:InterfaceName>
+        <bas:InterfaceNamespace>urn:your:interface:namespace</bas:InterfaceNamespace>
+      </bas:IntegratedConfigurationID>
+      -->
+
+      <!-- Filter by Description (multi-language) -->
+      <bas:Description>
+        <basg:languageCode>EN</basg:languageCode>
+        Some description contains XYZ
+      </bas:Description>
+
+      <!-- Optional administrative filters -->
+      <!--
+      <bas:AdministrativeData>
+        <bas:ResponsibleUserAccountID>USER123</bas:ResponsibleUserAccountID>
+      </bas:AdministrativeData>
+      -->
+    </bas:IntegratedConfigurationQueryRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

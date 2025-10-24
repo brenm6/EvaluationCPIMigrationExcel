@@ -275,7 +275,7 @@ class ExcelManager:
             sheet123.cell(row=row_eval, column=2, value=integration_scenario)
             
             # Spalte 3: "Type" (Integration Scenario, Primary Key)
-            type = table_type.get(integration_scenario, "")
+            type = table_type.get(integration_scenario, " ")
             sheet123.cell(row=row_eval, column=3, value=type) 
 
             # Spalte 4: Message Throughput (30 Days)
@@ -296,16 +296,16 @@ class ExcelManager:
             sheet123.cell(row=row_eval, column=6, value=party)
 
             # Spalte 7: System (zwischen erstem und zweitem "|")
-            sender_component = parts[1] if len(parts) > 1 else ""
+            sender_component = parts[1] if len(parts) > 1 else " "
             sheet123.cell(row=row_eval, column=7, value=sender_component)        
 
             # Spalte 8: Sender Interface / Product CMDB (zwischen zweitem und drittem "|")
-            sender_interface = parts[2] if len(parts) > 2 else ""
+            sender_interface = parts[2] if len(parts) > 2 else " "
             sheet123.cell(row=row_eval, column=8, value=sender_interface)
 
             # Spalte 9: Typ S
             type_s_values = sorted([v for v in table_type_s.get(integration_scenario, set()) if v])
-            type_s_str = " / ".join(type_s_values)
+            type_s_str = " / ".join(type_s_values) if type_s_values else " "
             sheet123.cell(row=row_eval, column=9, value=type_s_str)
 
             # Spalte 10: Modul (nur SenderAdapterModulePresence)
@@ -314,7 +314,7 @@ class ExcelManager:
 
             # Spalte 11: Typ R
             type_r_values = sorted([v for v in table_type_r.get(integration_scenario, set()) if v])
-            type_r_str = " / ".join(type_r_values)
+            type_r_str = " / ".join(type_r_values) if type_r_values else " "
             sheet123.cell(row=row_eval, column=11, value=type_r_str)
 
             # Spalte 12: Modul (ReceiverAdapterModulePresence)
@@ -340,7 +340,7 @@ class ExcelManager:
                 cell_value = "X" if any(
                     value == value_to_check
                     for value in scenario_values_table.get(integration_scenario, [])
-                ) else ""
+                ) else " "
                 sheet123.cell(row=row_eval, column=column, value=cell_value)
 
 
@@ -352,7 +352,7 @@ class ExcelManager:
 
             # Spalte 15: AsynchronSynchron (SenderAdapterQoS, "be"->"S", "eo"->"A")
             qus_values = table_qus.get(integration_scenario, set())
-            qus_str = ""
+            qus_str = " "
             if qus_values:
                 qus_str = " / ".join(["A" if v == "eo" else "S" if v == "be" else v for v in qus_values if v])
             sheet123.cell(row=row_eval, column=add+15, value=qus_str)
@@ -361,12 +361,12 @@ class ExcelManager:
             sheet123.cell(row=row_eval, column=add+16, value=sender_interface)
 
             # Spalte 17: Mapping
-            mapping_value = table_mapping.get(integration_scenario, "")
+            mapping_value = table_mapping.get(integration_scenario, " ")
             sheet123.cell(row=row_eval, column=add+17, value=mapping_value)
 
             # Spalte 18: UDF
-            udf_a = ""
-            udf_b = ""
+            udf_a = " "
+            udf_b = " "
             
             udf_count = table_udf.get(integration_scenario, 0)
             functlib_count = table_functlib.get(integration_scenario, 0)
@@ -394,23 +394,23 @@ class ExcelManager:
                 if table_special_functlib.get(integration_scenario, False):
                     udf_b = "FL"  
             
-            if udf_a and udf_b:
+            if udf_a.strip() and udf_b.strip():
                 udf_value_str = f"{udf_a} / {udf_b}"
-            elif udf_a:
+            elif udf_a.strip():
                 udf_value_str = udf_a
-            elif udf_b:
+            elif udf_b.strip():
                 udf_value_str = udf_b
             else:
-                udf_value_str = ""
+                udf_value_str = " "
             
             sheet123.cell(row=row_eval, column=add+18, value=udf_value_str)
             
             # Spalte 19: AnzahlEmpfänger
-            receivers_count = table_receivers_count.get(integration_scenario, "")
+            receivers_count = table_receivers_count.get(integration_scenario, " ")
             sheet123.cell(row=row_eval, column=add+19, value=receivers_count)
 
             # Spalte 20: Quality of Service (SenderAdapterQoS, Originalwert(e))
-            qus_orig = " / ".join([v for v in qus_values if v]) if qus_values else ""
+            qus_orig = " / ".join([v for v in qus_values if v]) if qus_values else " "
             sheet123.cell(row=row_eval, column=add+20, value=qus_orig)
 
             # Spalte 21: Anzahl von Schnittstellen FTP#
@@ -466,7 +466,7 @@ class ExcelManager:
             ):
                 sheet123.cell(row=row_eval, column=add+26, value="X")
             else:
-                sheet123.cell(row=row_eval, column=add+26, value="")
+                sheet123.cell(row=row_eval, column=add+26, value=" ")
 
             # Spalte 27: LookupService
             if any(
@@ -475,7 +475,7 @@ class ExcelManager:
             ):
                 sheet123.cell(row=row_eval, column=add+27, value="X")
             else:
-                sheet123.cell(row=row_eval, column=add+27, value="")
+                sheet123.cell(row=row_eval, column=add+27, value=" ")
 
             # Spalte 28: OS (File)
             if any(
@@ -484,7 +484,7 @@ class ExcelManager:
             ):
                 sheet123.cell(row=row_eval, column=add+28, value="X")
             else:
-                sheet123.cell(row=row_eval, column=add+28, value="")
+                sheet123.cell(row=row_eval, column=add+28, value=" ")
 
             row_eval += 1   
                     
@@ -496,18 +496,18 @@ class ExcelManager:
             sheet123.cell(row=row_eval, column=add+30, value=mmx_value)
 
             # Spalte 31: XSLT
-            xsltx_value = "X" if table_xsltx.get(integration_scenario, False) else ""
+            xsltx_value = "X" if table_xsltx.get(integration_scenario, False) else " "
             sheet123.cell(row=row_eval, column=add+31, value=xsltx_value)
 
             # Spalte 32: Java
-            javax_value = "X" if table_javax.get(integration_scenario, False) else ""
+            javax_value = "X" if table_javax.get(integration_scenario, False) else " "
             sheet123.cell(row=row_eval, column=add+32, value=javax_value)
 
             # Spalte 33: ABAP
             sheet123.cell(row=row_eval, column=add+33, value="n/a")
 
             # Spalte 34: EOIO (Spalte 30 ggf. leer lassen)
-            eoiox_value = "X" if table_eoiox.get(integration_scenario, False) else ""
+            eoiox_value = "X" if table_eoiox.get(integration_scenario, False) else " "
             sheet123.cell(row=row_eval, column=add+34, value=eoiox_value)
             
             # Spalte 35: Min Effort Required (Hours)
@@ -578,10 +578,24 @@ class ExcelManager:
                 sheet123.cell(row=1, column=idx).value = f'=COUNTIF({col_letter}3:{col_letter}1048576,"X")'
                 sheet123.cell(row=1, column=idx).font = openpyxl.styles.Font(bold=True)
             else:
-                sheet123.cell(row=1, column=idx).value = ""
+                sheet123.cell(row=1, column=idx).value = " "
+        
+        # Weißt bestimmten Zeilen bestimmte Breiten zu
+        self.columns_manager.set_column_width(sheet123, 7, 20)  # Sender Component
+        self.columns_manager.set_column_width(sheet123, 8, 20)  # Sender Interface
+        self.columns_manager.set_column_width(sheet123, 25, 25)  # Sender Interface
         
         # Färbe einzelen Zeilen ein
         self.columns_manager.set_colour_green(sheet123,1)
+        self.columns_manager.set_colour_green(sheet123,13)
+        self.columns_manager.set_colour_green(sheet123,14)
+        self.columns_manager.set_colour_green(sheet123,15)
+        self.columns_manager.set_colour_green(sheet123,16)
+        self.columns_manager.set_colour_green(sheet123,17)
+        self.columns_manager.set_colour_green(sheet123,18)
+        self.columns_manager.set_colour_green(sheet123,19)
+        self.columns_manager.set_colour_green(sheet123,20)
+        
         self.columns_manager.set_clour_orange(sheet123,6)
         self.columns_manager.set_clour_orange(sheet123,10)
         self.columns_manager.set_colour_light_blue(sheet123,35)
@@ -589,7 +603,7 @@ class ExcelManager:
         self.columns_manager.set_colour_light_blue(sheet123,37)
         
         # Erste Zeile Große Buchstaben
-        self.columns_manager.first_line_bold(sheet123)      
+        self.columns_manager.first_line_bold(sheet123)                  
     
     
     def group_columns(self):
