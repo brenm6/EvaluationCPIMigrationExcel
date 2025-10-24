@@ -28,7 +28,7 @@ The Excel Evaluation Tool processes SAP CPI evaluation data and generates a cons
 Excel Evaluation Tool/
 ├── Excel_Manager.py       # Core processing logic and data extraction
 ├── Columns_Manager.py     # Excel formatting and styling utilities
-├── Headers.py            # Column header definitions
+├── Headers.py             # Column header definitions
 ├── Frontend.py           # GUI interface (Tkinter)
 ├── README.md            # This file
 └── evaluation_run_results_input_PA3_2025-07-18.xlsx  # Sample input file
@@ -45,12 +45,23 @@ The main processing engine that:
 - Generates the output "Evaluation" sheet
 - Applies borders and formatting to cells
 
+Row layout in the generated "Evaluation" sheet:
+- Row 1: Summary formulas (SUM/COUNTIF) for selected columns
+- Row 2: Column headers (filter row)
+- Row 3+: Data rows
+
 Key methods:
 - `__init__(filename)`: Initializes the manager and loads the workbook
 - `create_sheet(title, index)`: Creates a new worksheet
 - `set_columns(sheet)`: Sets up column headers
 - `fill_sheet(sheet)`: Main processing method that populates the evaluation sheet
 - `save()`: Saves the processed workbook to "Test_____File.xlsx"
+
+Other behaviors:
+- Inserts an extra row so that headers are on row 2 and summary formulas on row 1
+- Applies AutoFilter to the header row (row 2)
+- Removes all sheets except the generated "Evaluation" sheet before saving
+- Ensures visually empty cells contain a single whitespace to prevent overflow from adjacent cells
 
 ### Columns_Manager.py
 Handles Excel cell formatting and styling:
@@ -68,14 +79,56 @@ Key methods:
 - `first_line_bold(worksheet)`: Makes first row bold with large font
 
 ### Headers.py
-Defines the 48 column headers for the evaluation report, including:
-- Basic information (Scenario, Type, Party, Components)
-- Adapter information (Sender/Receiver types and modules)
-- Module flags (MTB, MLB, PGPE, etc.)
-- Metrics (Interface counts, QoS, UDF usage)
-- Mapping details (XSLT, Java, ABAP, MM)
-- Effort estimations
-- Modernization recommendations
+Defines the 48 column headers for the evaluation report. Exact columns:
+
+1. #
+2. Szenario
+3. Type
+4. Message Throughput (30 Days)
+5. TShirt SAP
+6. Party
+7. Sender Component
+8. Sender Interface
+9. Typ S
+10. Modul (Sender)
+11. Typ R
+12. Modul (Receiver)
+13. MTB
+14. MLB
+15. PGPE
+16. IDOCF2XML
+17. DCB
+18. MHB
+19. PSB
+20. XMLAB
+21. Receiver Component
+22. Receiver Interface
+23. Asyn Sync
+24. ICO
+25. Mapping
+26. UDF
+27. Receiver#
+28. QOS
+29. FTP#
+30. SFTP#
+31. FTPS#
+32. UDF#
+33. FunctLib#
+34. Dynmaic Conf
+35. LookupService
+36. OS (File)
+37. ABAP#
+38. MM#
+39. XSLT
+40. Java#
+41. ABAP
+42. EOIO
+43. Min Effort Required (Hours)
+44. Max Effort Required (Hours)
+45. Average Effort Required (Hours)
+46. Modernization category
+47. Possible modernization item
+48. Recommendation
 
 ### Frontend.py
 Provides a graphical user interface using Tkinter:
@@ -86,26 +139,34 @@ Provides a graphical user interface using Tkinter:
 
 ## Requirements
 
-```python
+```text
+Python 3.9+
 openpyxl>=3.0.0
-tkinter (usually comes with Python)
+tkinter (usually comes with Python on Windows)
 line_profiler (optional, for performance profiling)
 ```
 
 ## Installation
 
 1. Clone or download this repository
-2. Install required dependencies:
-```bash
-pip install openpyxl line_profiler
-```
+2. (Optional) Create and activate a virtual environment
+  - PowerShell:
+    ```powershell
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    ```
+3. Install required dependencies:
+  ```powershell
+  pip install --upgrade pip
+  pip install openpyxl line_profiler
+  ```
 
 ## Usage
 
 ### GUI Mode (Recommended)
 
 Run the frontend application:
-```bash
+```powershell
 python Frontend.py
 ```
 
@@ -117,11 +178,13 @@ python Frontend.py
 ### Command-Line Mode
 
 Run the Excel Manager directly:
-```bash
+```powershell
 python Excel_Manager.py
 ```
 
-The script will process the hardcoded input file and generate the output.
+Notes:
+- In direct script mode, the input file path is currently hardcoded inside `Excel_Manager.__init__` to `evaluation_run_results_input_PA3_2025-07-18.xlsx` (in the project folder). Adjust as needed.
+- The output workbook is saved as `Test_____File.xlsx` in the project folder.
 
 ## Input File Requirements
 
@@ -149,18 +212,18 @@ The tool generates a single "Evaluation" sheet with 48 columns containing:
 - Modernization recommendations
 
 ### Color Coding
-- **Yellow**: Header row
-- **Green**: Module flags (columns 13-20) and core metrics
-- **Orange**: Selected analysis columns
-- **Light Blue**: Effort estimation columns
+- Yellow: Header row
+- Green: Key analysis columns (e.g., modules and counts)
+- Orange: Selected grouping/identity columns (e.g., Party, Modul)
+- Light Blue: Effort estimation columns (Min/Max/Average)
 
 ## Data Processing Logic
 
-1. **Sorting**: Integration scenarios are sorted alphabetically
-2. **Deduplication**: Only the first occurrence of each scenario is processed
-3. **Aggregation**: Multiple rules per scenario are aggregated into counts or flags
-4. **Empty Cell Handling**: All empty cells contain a whitespace to prevent text overflow
-5. **Formula Generation**: Summary formulas (SUM, COUNTIF) are added to row 1
+1. Sorting: Integration scenarios are sorted alphabetically
+2. Deduplication: Only the first occurrence of each scenario is processed
+3. Aggregation: Multiple rules per scenario are aggregated into counts or flags
+4. Empty Cell Handling: All visually empty cells are written as a single whitespace (" ") to prevent overflow from adjacent cells
+5. Formula Generation: Summary formulas (SUM for numeric counts; COUNTIF for X-marked columns) are added to row 1
 
 ## Special Features
 
@@ -183,6 +246,13 @@ Special rules are detected for:
 - Function Library usage
 - EOIO (Exactly Once In Order) processing
 
+### Summary Formulas
+Row 1 contains:
+- SUM across all rows (3..1048576) for numeric count columns, such as:
+  - Anzahl von Schnittstellen: FTP, SFTP, FTPS, UDF
+- COUNTIF for columns where "X" marks presence, such as:
+  - MM, XSLT, Java
+
 ## Error Handling
 
 - **Permission Errors**: Detects if output file is open and prompts user to close it
@@ -191,7 +261,7 @@ Special rules are detected for:
 
 ## Performance
 
-The tool uses the `line_profiler` decorator for performance monitoring. Processing time varies based on:
+The tool can use the `line_profiler` decorator for performance monitoring (optional). Processing time varies based on:
 - Number of integration scenarios
 - Complexity of rules
 - File size
@@ -200,7 +270,7 @@ Typical processing time: 5-30 seconds for standard files.
 
 ## Limitations
 
-- Input file path is currently hardcoded in command-line mode
+- Input file path is currently hardcoded in command-line mode (adjust in `Excel_Manager.__init__`)
 - Output filename is fixed as "Test_____File.xlsx"
 - Requires specific sheet names and column structure
 - Some columns are hardcoded to "n/a" (ABAP-related fields)
@@ -239,8 +309,8 @@ Created for SAP CPI migration evaluation projects.
 
 ## Version History
 
-- **Latest**: Added whitespace protection for empty cells
-- Previous versions included basic evaluation functionality
+- Latest: Added whitespace protection for empty cells; README expanded with exact column definitions and Windows-friendly usage
+- Previous: Basic evaluation functionality and initial formatting
 
 ---
 
